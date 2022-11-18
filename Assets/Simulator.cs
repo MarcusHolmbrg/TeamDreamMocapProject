@@ -4,11 +4,18 @@ using UnityEngine;
 using System.IO;
 using System;
 using UnityEngine.UI;
+using JetBrains.Annotations;
 
 public class Simulator : MonoBehaviour
 {
     public GameObject cathTop, cathTL, cathTR, cathBL, cathBR,
                     skullTL, skullTR, skullBL, skullBR, skullBrow; //references to marker spheres
+
+    public GameObject cathCenter, skullCenter;//references to the barycenters of markers
+    public Quaternion cathCenterRot, skullCenterRot;
+    private Vector3 cathRight = Vector3.one;
+    private Vector3 cathUp = Vector3.one;
+
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
@@ -41,6 +48,10 @@ public class Simulator : MonoBehaviour
 
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
+
+        //initialize offset for 3dmodels 
+        cathCenterRot = cathCenter.transform.rotation;
+        skullCenterRot = skullCenter.transform.rotation;  //==> Should be hardcoded and set to private once we have the right alignment
 
         //initialize arrays
         field = time = new float[fileSize];
@@ -87,11 +98,32 @@ public class Simulator : MonoBehaviour
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
 
+            AlignModels();
+
             index++;
             if (index >= fileSize) readyToUpdate = false; //stop simulation if eod is reached
 
             timeToCall = Time.fixedTime + timeDelay;
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
+        Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
+    }
+
+    //Method to display the models of catheter and skull according to the markers positions
+    private void AlignModels()
+    {
+        //Align orientation of the catheter
+        cathRight = cathTL.transform.position - cathTR.transform.position;
+        cathUp = cathTR.transform.position - cathBR.transform.position - Vector3.Project(cathTR.transform.position - cathBR.transform.position, cathRight);
+        cathCenter.transform.rotation = Quaternion.LookRotation(cathRight,cathUp);
+        //Align positions at the barycenter
+        cathCenter.transform.position = new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f);
+        skullCenter.transform.position = new Vector3((x6 + x7 + x8 + x9 + x10) / 5.0f, (y6 + y7 + y8 + y9 + y10) / 5.0f, (z6 + z7 + z8 + z9 + z10) / 5.0f);
+        
     }
 
     //method to normalize coordinates in Unity scene
