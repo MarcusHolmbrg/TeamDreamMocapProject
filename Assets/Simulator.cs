@@ -15,6 +15,9 @@ public class Simulator : MonoBehaviour
     string path = "Assets/catheter008.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
+    bool paused;
+    bool rewind;
+    bool forward;
 
     //arrays with data from each row
     float[] field, time;
@@ -34,6 +37,9 @@ public class Simulator : MonoBehaviour
         //initialize indexes
         index = fileSize = 0;
         readyToUpdate = false;
+        paused = false;
+        rewind = false;
+        forward = true;
 
         slider.onValueChanged.AddListener(delegate { ChangeSpeed(); });
 
@@ -70,7 +76,28 @@ public class Simulator : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate)
+        if (Input.GetButtonDown("space")){
+            print("space is pressed");
+            paused = !paused;
+
+        }
+        if (Input.GetButtonDown("left")){
+            print("left is pressed");
+            rewind = true;
+            forward = false;
+
+        }
+        if (Input.GetButtonDown("right")){
+            print("right is pressed");
+            rewind = false;
+            forward = true;
+
+        }
+
+
+
+
+        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
             //normalize positions
             Normalize();
@@ -87,10 +114,21 @@ public class Simulator : MonoBehaviour
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
 
-            index++;
-            if (index >= fileSize) readyToUpdate = false; //stop simulation if eod is reached
+            
+            if (index >= fileSize){
+                readyToUpdate = false; //stop simulation if eod is reached
+            }
+
+            if (rewind && index >= 0){
+                index--;
+            }
+
+            if (forward){
+                index++;
+            }
 
             timeToCall = Time.fixedTime + timeDelay;
+            
         }
     }
 
