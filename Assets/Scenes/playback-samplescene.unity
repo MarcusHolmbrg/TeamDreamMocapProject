@@ -1560,6 +1560,10 @@ MonoBehaviour:
   skullBL: {fileID: 209706076}
   skullBR: {fileID: 84211825}
   skullBrow: {fileID: 1633082965}
+  cathCenter: {fileID: 1568489316}
+  skullCenter: {fileID: 1010249846}
+  cathCenterRot: {x: 0, y: 0, z: 0, w: 0}
+  skullCenterRot: {x: 0, y: 0, z: 0, w: 0}
   slider: {fileID: 2031703441}
 --- !u!4 &1406889823
 Transform:
