@@ -15,6 +15,10 @@ public class Simulator : MonoBehaviour
     string path = "Assets/catheter008.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
+    bool paused;
+    bool rewind;
+    bool forward;
+    float playBackSpeed;
 
     //arrays with data from each row
     float[] field, time;
@@ -34,6 +38,10 @@ public class Simulator : MonoBehaviour
         //initialize indexes
         index = fileSize = 0;
         readyToUpdate = false;
+        paused = false;
+        rewind = false;
+        forward = true;
+        playBackSpeed = 1.0f;
 
         slider.onValueChanged.AddListener(delegate { ChangeSpeed(); });
 
@@ -67,10 +75,49 @@ public class Simulator : MonoBehaviour
         sr.Close();
     }
 
+    void Update() {
+      if (Input.GetKeyDown(KeyCode.Space)){
+          print("space is pressed");
+          paused = !paused;
+
+      }
+      if (Input.GetKeyDown(KeyCode.LeftArrow)){
+          print("left is pressed");
+          rewind = true;
+          forward = false;
+
+      }
+      if (Input.GetKeyDown(KeyCode.RightArrow)){
+          print("right is pressed");
+          rewind = false;
+          forward = true;
+
+      }
+
+      // 2 and 0.1 are somewhat arbitrary boundaries subject to change.
+      // Pressing upArrow increases playBackSpeed regardless of if we are
+      // currently rewinding or playing it normally. Same for downArrow
+      if (Input.GetKeyDown(KeyCode.UpArrow)){
+          print("up is pressed");
+          if (playBackSpeed < 2) {
+            playBackSpeed += 0.1f;
+            print(playBackSpeed);
+          }
+      }
+
+      if (Input.GetKeyDown(KeyCode.DownArrow)){
+          print("down is pressed");
+          if (playBackSpeed > 0.1) {
+            playBackSpeed -= 0.1f;
+            print(playBackSpeed);
+          }
+      }
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate)
+        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
             //normalize positions
             Normalize();
@@ -87,10 +134,21 @@ public class Simulator : MonoBehaviour
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
 
-            index++;
-            if (index >= fileSize) readyToUpdate = false; //stop simulation if eod is reached
 
-            timeToCall = Time.fixedTime + timeDelay;
+            if (index >= fileSize){
+                readyToUpdate = false; //stop simulation if eod is reached
+            }
+
+            if (rewind && index >= 0){
+                index--;
+            }
+
+            if (forward){
+                index++;
+            }
+
+            timeToCall = Time.fixedTime + timeDelay / playBackSpeed;
+
         }
     }
 
@@ -108,7 +166,7 @@ public class Simulator : MonoBehaviour
         x8 = headBottomLeft[index, 0] / 1000.0f;
         x9 = headBottomRight[index, 0] / 1000.0f;
         x10 = headBrow[index, 0] / 1000.0f;
-        
+
         //y coordinate
         y1 = cathTip[index, 1] / 1000.0f;
         y2 = cathTopLeft[index, 1] / 1000.0f;
@@ -120,7 +178,7 @@ public class Simulator : MonoBehaviour
         y8 = headBottomLeft[index, 1] / 1000.0f;
         y9 = headBottomRight[index, 1] / 1000.0f;
         y10 = headBrow[index, 1] / 1000.0f;
-        
+
         //z coordinate
         z1 = cathTip[index, 2] / 1000.0f;
         z2 = cathTopLeft[index, 2] / 1000.0f;
@@ -168,7 +226,7 @@ public class Simulator : MonoBehaviour
     private void Extract(StreamReader reader)
     {
         string line;
-        for (int i = 0; i < 5; i++) 
+        for (int i = 0; i < 5; i++)
             line = reader.ReadLine(); //skip headers
         line = reader.ReadLine(); //first line
 
@@ -203,7 +261,7 @@ public class Simulator : MonoBehaviour
             headBottomRight[runtimeField, 0] = float.Parse(temp[11], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull 4 x
             headBottomRight[runtimeField, 1] = float.Parse(temp[13], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull 4 y
             headBottomRight[runtimeField, 2] = float.Parse(temp[12], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull 4 z
-            
+
             /* calibration marker on burr hole is always 0
             headHole[runtimeField, 0] = float.Parse(temp[14]); //burr hole x
             headHole[runtimeField, 1] = float.Parse(temp[16]); //burr hole y
@@ -214,7 +272,7 @@ public class Simulator : MonoBehaviour
             headBrow[runtimeField, 0] = float.Parse(temp[17], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow x
             headBrow[runtimeField, 1] = float.Parse(temp[19], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow y
             headBrow[runtimeField, 2] = float.Parse(temp[18], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow z
-            
+
             //marker tree attached to the catheter
             cathTip[runtimeField, 0] = float.Parse(temp[20], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 x
             cathTip[runtimeField, 1] = float.Parse(temp[22], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 y
@@ -231,7 +289,7 @@ public class Simulator : MonoBehaviour
             cathBottomRight[runtimeField, 0] = float.Parse(temp[32], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 5 x
             cathBottomRight[runtimeField, 1] = float.Parse(temp[34], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 5 y
             cathBottomRight[runtimeField, 2] = float.Parse(temp[33], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 5 z
-            
+
             /* calibration marker on catheter tip is always 0
             cathEnd[runtimeField, 0] = float.Parse(temp[32]); //catheter tip x
             cathEnd[runtimeField, 1] = float.Parse(temp[34]); //catheter tip y
