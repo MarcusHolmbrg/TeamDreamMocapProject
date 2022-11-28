@@ -85,26 +85,32 @@ public class Simulator : MonoBehaviour
         sr.Close();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
-        if (Input.GetButtonDown("space")){
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             print("space is pressed");
             paused = !paused;
 
         }
-        if (Input.GetButtonDown("left")){
+        if (Input.GetButtonDown("left"))
+        {
             print("left is pressed");
             rewind = true;
             forward = false;
 
         }
-        if (Input.GetButtonDown("right")){
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
             print("right is pressed");
             rewind = false;
             forward = true;
-
         }
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
 
 
 
