@@ -111,10 +111,6 @@ public class Simulator : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-
-
-
         if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
 
@@ -148,13 +144,13 @@ public class Simulator : MonoBehaviour
             if (forward){
                 index++;
             }
-            AlignModels();
 
             index++;
             if (index >= fileSize) readyToUpdate = false; //stop simulation if eod is reached
 
             timeToCall = Time.fixedTime + timeDelay;
             
+            AlignModels();
         }
     }
 
