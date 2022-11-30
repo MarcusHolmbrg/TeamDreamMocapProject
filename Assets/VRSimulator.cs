@@ -5,17 +5,24 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using JetBrains.Annotations;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class Simulator : MonoBehaviour
+public class VRSimulator : MonoBehaviour
 {
     public GameObject cathTop, cathTL, cathTR, cathBL, cathBR,
                     skullTL, skullTR, skullBL, skullBR, skullBrow; //references to marker spheres
 
     public GameObject cathCenter, skullCenter;//references to the barycenters of markers
     public Quaternion cathCenterRot, skullCenterRot;
+    public Transform leftVRController;
     private Vector3 cathRight = Vector3.one;
     private Vector3 cathUp = Vector3.one;
+    [SerializeField] private InputActionReference timeController = null;
+    [SerializeField] private InputActionReference annotatePoint = null;
+    public Slider speedSlider;
+    public GameObject userObj;
+    public Text[] FrameStuff;
 
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
@@ -26,6 +33,9 @@ public class Simulator : MonoBehaviour
     bool paused;
     bool rewind;
     bool forward;
+    private float playBackSpeed = 1f;
+    public float maxPlaybackSpeed = 50f;
+    private float timer = 0;
 
     //arrays with data from each row
     float[] field, time;
@@ -52,7 +62,7 @@ public class Simulator : MonoBehaviour
 
         slider.onValueChanged.AddListener(delegate { ChangeSpeed(); });
 
-        timeToCall = Time.fixedTime + timeDelay;
+        timeToCall = timeDelay;
 
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
@@ -84,43 +94,68 @@ public class Simulator : MonoBehaviour
 
         //close reader
         sr.Close();
+        
+
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+       
+        Vector2 timeInputVal = timeController.action.ReadValue<Vector2>();
+        if (timeInputVal != Vector2.zero)
         {
-            print("space is pressed");
-            paused = !paused;
+            //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
+            if(timeInputVal.x > 0.1)
+            {
+                rewind = false;
+                forward = true;
+            }
+            else if(timeInputVal.x < -0.8f)
+            {
+                rewind = true;
+                forward = false;
+            }
+            if(timeInputVal.y > 0.8f)
+            {
+                if(playBackSpeed < maxPlaybackSpeed)
+                {
+                    playBackSpeed += maxPlaybackSpeed/2f * timeInputVal.y * Time.deltaTime;
+                }
+            }
+            else if (timeInputVal.y < -0.1f)
+            {
+                if (playBackSpeed > 0.1f)
+                {
+                    playBackSpeed -= maxPlaybackSpeed / 2f * -timeInputVal.y *  Time.deltaTime;
+                }
+                Debug.Log(playBackSpeed);
+            }
+            if (slider)
+            {
+                slider.value = playBackSpeed;
+            }
 
-        }
-        if (Input.GetButtonDown("left"))
-        {
-            print("left is pressed");
-            rewind = true;
-            forward = false;
+            //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            print("right is pressed");
-            rewind = false;
-            forward = true;
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
+
             Invoke(nameof(RestartScene), 1f);
         }
+
+        // print("space is pressed");
+        //paused = !paused;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
+        timer += Time.deltaTime;
+        if (timer >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
 
-            Debug.Log("FrameCount: " + executedFrames);
-            executedFrames += 1;
+            Debug.Log("FrameCount: " + index);
 
             //normalize positions
             Normalize();
@@ -156,16 +191,21 @@ public class Simulator : MonoBehaviour
                 readyToUpdate = false; //stop simulation if eod is reached
                 Invoke(nameof(RestartScene), 1f);
             }
-            timeToCall = Time.fixedTime + timeDelay;
-            
+            timer = 0f;
+            timeToCall = timeDelay / playBackSpeed;
+            Debug.Log(timeToCall);
             AlignModels();
+            if (FrameStuff[0])
+            {
+                FrameStuff[0].text = "Current frame: " + index;
+            }
         }
     }
 
     private void OnApplicationQuit()
     {
-        //Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
-        //Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
+       // Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
+       // Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
     }
 
     //Method to display the models of catheter and skull according to the markers positions
@@ -358,6 +398,9 @@ public class Simulator : MonoBehaviour
     private void RestartScene()
     {
         Debug.Log("Restart");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        index = 0;
+        readyToUpdate = true;
+        timer = 0;
     }
 }
