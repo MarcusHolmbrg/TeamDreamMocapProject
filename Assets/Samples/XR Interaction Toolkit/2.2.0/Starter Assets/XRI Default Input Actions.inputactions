@@ -880,7 +880,18 @@
                 {
                     "name": "",
                     "id": "068e4d07-3643-4c35-9352-aeb542188b5e",
-                    "path": "<XRController>{RightHand}/primary2DAxis",
+                    "path": "<XRController>{RightHand}/trackpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "AdjustPlaybackSpeed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5197ddc9-d8ea-4a39-892b-b8a6c829dc63",
+                    "path": "<ViveController>{RightHand}/trackpad",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

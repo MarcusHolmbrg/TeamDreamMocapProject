@@ -122,7 +122,10 @@ public class VRSimulator : MonoBehaviour
 
     private void Update()
     {
-       
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            Debug.Log("Annotated Point " + index);
+        }
         Vector2 timeInputVal = timeController.action.ReadValue<Vector2>();
         if (timeInputVal != Vector2.zero)
         {
@@ -137,20 +140,22 @@ public class VRSimulator : MonoBehaviour
                 rewind = true;
                 forward = false;
             }
-            if(timeInputVal.y > 0.8f)
+            if(timeInputVal.y > 0.6f)
             {
-                if(playBackSpeed < maxPlaybackSpeed)
+                if (playBackSpeed < maxPlaybackSpeed)
                 {
-                    playBackSpeed += maxPlaybackSpeed/2f * timeInputVal.y * Time.deltaTime;
+                    playBackSpeed += maxPlaybackSpeed / 2f * -timeInputVal.y * Time.deltaTime;
                 }
             }
-            else if (timeInputVal.y < -0.1f)
+            else if (timeInputVal.y < -0.6f)
             {
-                if (playBackSpeed > 0.1f)
+                if (playBackSpeed > 1f)
                 {
-                    playBackSpeed -= maxPlaybackSpeed / 2f * -timeInputVal.y *  Time.deltaTime;
+                    playBackSpeed -= maxPlaybackSpeed / 2f * timeInputVal.y * Time.deltaTime;
                 }
-                Debug.Log(playBackSpeed);
+
+
+               // Debug.Log(playBackSpeed);
             }
             if (slider)
             {
@@ -177,7 +182,7 @@ public class VRSimulator : MonoBehaviour
         if (timer >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
 
-            Debug.Log("FrameCount: " + index);
+            //Debug.Log("FrameCount: " + index);
 
             //normalize positions
             Normalize();
@@ -207,7 +212,6 @@ public class VRSimulator : MonoBehaviour
                 index++;
             }
 
-            index++;
             if (index >= fileSize)
             {
                 readyToUpdate = false; //stop simulation if eod is reached
@@ -215,7 +219,7 @@ public class VRSimulator : MonoBehaviour
             }
             timer = 0f;
             timeToCall = timeDelay / playBackSpeed;
-            Debug.Log(timeToCall);
+            Debug.Log("Time2Call: " + timeToCall);
             AlignModels();
             if (FrameStuff[0])
             {
@@ -414,7 +418,7 @@ public class VRSimulator : MonoBehaviour
 
     private void ChangeSpeed()
     {
-        timeDelay = slider.value;
+        //timeDelay = slider.value;
     }
 
     private void RestartScene()

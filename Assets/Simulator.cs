@@ -5,6 +5,7 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using JetBrains.Annotations;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class Simulator : MonoBehaviour
@@ -14,18 +15,27 @@ public class Simulator : MonoBehaviour
 
     public GameObject cathCenter, skullCenter;//references to the barycenters of markers
     public Quaternion cathCenterRot, skullCenterRot;
+    public Transform leftVRController;
     private Vector3 cathRight = Vector3.one;
     private Vector3 cathUp = Vector3.one;
+    //[SerializeField] private InputActionReference timeController = null;
+    //[SerializeField] private InputActionReference annotatePoint = null;
+    //public Slider speedSlider;
+    //public GameObject userObj;
+    public Text[] FrameStuff;
 
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter004.txt"; //path to tsv file
+    string path = "Assets/Recordings/catheter005.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
     bool paused;
     bool rewind;
     bool forward;
+    private float playBackSpeed = 1f;
+    public float maxPlaybackSpeed = 50f;
+    private float timer = 0;
 
     //arrays with data from each row
     float[] field, time;
@@ -60,7 +70,6 @@ public class Simulator : MonoBehaviour
         {"Assets/Recordings/catheter007.txt",new Vector3(41.510006f,177.755005f,359.040009f) } //file : cathether007
         };
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -73,7 +82,7 @@ public class Simulator : MonoBehaviour
 
         slider.onValueChanged.AddListener(delegate { ChangeSpeed(); });
 
-        timeToCall = Time.fixedTime + timeDelay;
+        timeToCall = timeDelay;
 
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
@@ -113,43 +122,66 @@ public class Simulator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            print("space is pressed");
-            paused = !paused;
-
-        }
-        if (Input.GetButtonDown("left"))
-        {
-            print("left is pressed");
-            rewind = true;
-            forward = false;
-
+            Debug.Log("Annotated Point " + index);
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            print("right is pressed");
+            //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
             rewind = false;
             forward = true;
         }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            rewind = true;
+            forward = false;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            if (playBackSpeed > 1f)
+            {
+                playBackSpeed -= maxPlaybackSpeed / 2f * Time.deltaTime;
+            }
+        }
+        else if (Input.GetKey(KeyCode.UpArrow))
+        {
+            if (playBackSpeed < maxPlaybackSpeed)
+            {
+                playBackSpeed += maxPlaybackSpeed / 2f * Time.deltaTime;
+            }
+            //Debug.Log(playBackSpeed);
+        }
+        if (slider)
+        {
+            slider.value = playBackSpeed;
+        }
+
+            //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
+            
         if (Input.GetKeyDown(KeyCode.R))
         {
+
             Invoke(nameof(RestartScene), 1f);
         }
+
+        // print("space is pressed");
+        //paused = !paused;
     }
+
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
+        timer += Time.deltaTime;
+        if (timer >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
 
-            Debug.Log("FrameCount: " + executedFrames);
-            executedFrames += 1;
+           // Debug.Log("FrameCount: " + index);
 
             //normalize positions
             Normalize();
-            
+
             //update marker positions
             cathTop.transform.position = new Vector3(x1, y1, z1);
             cathTL.transform.position = new Vector3(x2, y2, z2);
@@ -162,35 +194,42 @@ public class Simulator : MonoBehaviour
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
 
-            
-            if (index >= fileSize){
+
+            if (index >= fileSize)
+            {
                 readyToUpdate = false; //stop simulation if eod is reached
             }
 
-            if (rewind && index >= 0){
+            if (rewind && index > 0)
+            {
                 index--;
             }
 
-            if (forward){
+            if (forward)
+            {
                 index++;
             }
 
-            index++;
             if (index >= fileSize)
             {
                 readyToUpdate = false; //stop simulation if eod is reached
                 Invoke(nameof(RestartScene), 1f);
             }
-            timeToCall = Time.fixedTime + timeDelay;
-            
+            timer = 0f;
+            timeToCall = timeDelay / playBackSpeed;
+            //Debug.Log("Time2Call: " + timeToCall);
             AlignModels();
+            if (FrameStuff[0])
+            {
+                FrameStuff[0].text = "Current frame: " + index;
+            }
         }
     }
 
     private void OnApplicationQuit()
     {
-        //Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
-        //Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
+        // Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
+        // Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
     }
 
     //Method to display the models of catheter and skull according to the markers positions
@@ -199,11 +238,11 @@ public class Simulator : MonoBehaviour
         //Align orientation of the catheter
         cathRight = cathTL.transform.position - cathTR.transform.position;
         cathUp = cathTR.transform.position - cathBR.transform.position - Vector3.Project(cathTR.transform.position - cathBR.transform.position, cathRight);
-        cathCenter.transform.rotation = Quaternion.LookRotation(cathRight,cathUp);
+        cathCenter.transform.rotation = Quaternion.LookRotation(cathRight, cathUp);
         //Align positions at the barycenter
         cathCenter.transform.position = new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f);
         skullCenter.transform.position = new Vector3((x6 + x7 + x8 + x9 + x10) / 5.0f, (y6 + y7 + y8 + y9 + y10) / 5.0f, (z6 + z7 + z8 + z9 + z10) / 5.0f);
-        
+
     }
 
     //method to normalize coordinates in Unity scene
@@ -220,7 +259,7 @@ public class Simulator : MonoBehaviour
         x8 = headBottomLeft[index, 0] / 1000.0f;
         x9 = headBottomRight[index, 0] / 1000.0f;
         x10 = headBrow[index, 0] / 1000.0f;
-        
+
         //y coordinate
         y1 = cathTip[index, 1] / 1000.0f;
         y2 = cathTopLeft[index, 1] / 1000.0f;
@@ -232,7 +271,7 @@ public class Simulator : MonoBehaviour
         y8 = headBottomLeft[index, 1] / 1000.0f;
         y9 = headBottomRight[index, 1] / 1000.0f;
         y10 = headBrow[index, 1] / 1000.0f;
-        
+
         //z coordinate
         z1 = cathTip[index, 2] / 1000.0f;
         z2 = cathTopLeft[index, 2] / 1000.0f;
@@ -295,7 +334,7 @@ public class Simulator : MonoBehaviour
 
             //populate arrays
             field[runtimeField] = runtimeField + 1.0f;
-            time[runtimeField] = runtimeField/100.0f;
+            time[runtimeField] = runtimeField / 100.0f;
 
 
             //marker tree attached to the skull
@@ -377,13 +416,16 @@ public class Simulator : MonoBehaviour
 
     private void ChangeSpeed()
     {
-        timeDelay = slider.value;
+        //timeDelay = slider.value;
     }
 
     private void RestartScene()
     {
         Debug.Log("Restart");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        index = 0;
+        readyToUpdate = true;
+        timer = 0;
     }
 }
 
