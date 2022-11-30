@@ -19,7 +19,7 @@ public class Simulator : MonoBehaviour
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter003.txt"; //path to tsv file
+    string path = "Assets/Recordings/catheter004.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
 
@@ -99,8 +99,8 @@ public class Simulator : MonoBehaviour
         sr.Close();
 
         //set offset of skull depending on recording
-        //skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
-        //skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
+        skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
+        skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
     }
 
     // Update is called once per frame
