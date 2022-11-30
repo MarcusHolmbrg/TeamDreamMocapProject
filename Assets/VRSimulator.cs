@@ -5,27 +5,37 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using JetBrains.Annotations;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class Simulator : MonoBehaviour
+public class VRSimulator : MonoBehaviour
 {
     public GameObject cathTop, cathTL, cathTR, cathBL, cathBR,
                     skullTL, skullTR, skullBL, skullBR, skullBrow; //references to marker spheres
 
     public GameObject cathCenter, skullCenter;//references to the barycenters of markers
     public Quaternion cathCenterRot, skullCenterRot;
+    public Transform leftVRController;
     private Vector3 cathRight = Vector3.one;
     private Vector3 cathUp = Vector3.one;
+    [SerializeField] private InputActionReference timeController = null;
+    [SerializeField] private InputActionReference annotatePoint = null;
+    public Slider speedSlider;
+    public GameObject userObj;
+    public Text[] FrameStuff;
 
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter004.txt"; //path to tsv file
+    string path = "Assets/Recordings/catheter005.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
     bool paused;
     bool rewind;
     bool forward;
+    private float playBackSpeed = 1f;
+    public float maxPlaybackSpeed = 50f;
+    private float timer = 0;
 
     //arrays with data from each row
     float[] field, time;
@@ -40,27 +50,6 @@ public class Simulator : MonoBehaviour
 
     public Slider slider; //slider to control the animation speed
 
-    //Custom transform coordinates for the skull
-    private Dictionary<String, Vector3> skullOffsetPos = new Dictionary<String, Vector3> {
-        {"Assets/Recordings/catheter001.txt",new Vector3(-0.939999998f,-14.1099997f,5.55000019f)}, //file : cathether001 NOT WELL ALIGNED
-        {"Assets/Recordings/catheter002.txt", new Vector3(-1.88f,-13.8599997f,4.67000008f) }, //file : cathether002 NOT WELL ALIGNED
-        {"Assets/Recordings/catheter003.txt", new Vector3(-1.10000002f,-14.1099997f,6.32000017f)}, //file : cathether003
-        {"Assets/Recordings/catheter004.txt",new Vector3(-1.28999996f,-13.4799995f,6.07999992f) }, //file : cathether004 NOT WELL ALIGNED
-        {"Assets/Recordings/catheter005.txt",new Vector3(-1.08000004f,-13.6199999f,6.5f) }, //file : cathether005
-        {"Assets/Recordings/catheter006.txt",new Vector3(-0.639999986f,-12.6899996f,5.57000017f) }, //file : cathether006
-        {"Assets/Recordings/catheter007.txt",new Vector3(-0.850000024f,-14.1099997f,5.6500001f) } //file : cathether007
-        };
-    private Dictionary<String, Vector3> skullOffsetRot = new Dictionary<String, Vector3> {
-        {"Assets/Recordings/catheter001.txt",new Vector3(38.116478f,177.862823f,358.404968f)}, //file : cathether001
-        {"Assets/Recordings/catheter002.txt", new Vector3(42.3742065f,181.589996f,3.92515182f) }, //file : cathether002
-        {"Assets/Recordings/catheter003.txt", new Vector3(43.9130974f,177.666306f,358.909271f) }, //file : cathether003
-        {"Assets/Recordings/catheter004.txt",new Vector3(42.3742065f,181.589996f,3.92515182f) }, //file : cathether004
-        {"Assets/Recordings/catheter005.txt",new Vector3(42.3742065f,181.589996f,3.92515182f) }, //file : cathether005
-        {"Assets/Recordings/catheter006.txt",new Vector3(42.3742104f,181.589996f,5.4209547f) }, //file : cathether006
-        {"Assets/Recordings/catheter007.txt",new Vector3(41.510006f,177.755005f,359.040009f) } //file : cathether007
-        };
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -73,7 +62,7 @@ public class Simulator : MonoBehaviour
 
         slider.onValueChanged.AddListener(delegate { ChangeSpeed(); });
 
-        timeToCall = Time.fixedTime + timeDelay;
+        timeToCall = timeDelay;
 
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
@@ -105,47 +94,68 @@ public class Simulator : MonoBehaviour
 
         //close reader
         sr.Close();
+        
 
-        //set offset of skull depending on recording
-        skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
-        skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+       
+        Vector2 timeInputVal = timeController.action.ReadValue<Vector2>();
+        if (timeInputVal != Vector2.zero)
         {
-            print("space is pressed");
-            paused = !paused;
+            //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
+            if(timeInputVal.x > 0.1)
+            {
+                rewind = false;
+                forward = true;
+            }
+            else if(timeInputVal.x < -0.8f)
+            {
+                rewind = true;
+                forward = false;
+            }
+            if(timeInputVal.y > 0.8f)
+            {
+                if(playBackSpeed < maxPlaybackSpeed)
+                {
+                    playBackSpeed += maxPlaybackSpeed/2f * timeInputVal.y * Time.deltaTime;
+                }
+            }
+            else if (timeInputVal.y < -0.1f)
+            {
+                if (playBackSpeed > 0.1f)
+                {
+                    playBackSpeed -= maxPlaybackSpeed / 2f * -timeInputVal.y *  Time.deltaTime;
+                }
+                Debug.Log(playBackSpeed);
+            }
+            if (slider)
+            {
+                slider.value = playBackSpeed;
+            }
 
-        }
-        if (Input.GetButtonDown("left"))
-        {
-            print("left is pressed");
-            rewind = true;
-            forward = false;
+            //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            print("right is pressed");
-            rewind = false;
-            forward = true;
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
+
             Invoke(nameof(RestartScene), 1f);
         }
+
+        // print("space is pressed");
+        //paused = !paused;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Time.fixedTime >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
+        timer += Time.deltaTime;
+        if (timer >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
 
-            Debug.Log("FrameCount: " + executedFrames);
-            executedFrames += 1;
+            Debug.Log("FrameCount: " + index);
 
             //normalize positions
             Normalize();
@@ -181,16 +191,21 @@ public class Simulator : MonoBehaviour
                 readyToUpdate = false; //stop simulation if eod is reached
                 Invoke(nameof(RestartScene), 1f);
             }
-            timeToCall = Time.fixedTime + timeDelay;
-            
+            timer = 0f;
+            timeToCall = timeDelay / playBackSpeed;
+            Debug.Log(timeToCall);
             AlignModels();
+            if (FrameStuff[0])
+            {
+                FrameStuff[0].text = "Current frame: " + index;
+            }
         }
     }
 
     private void OnApplicationQuit()
     {
-        //Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
-        //Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
+       // Debug.Log("Skull model relative pos = " + skullCenter.transform.GetChild(0).localPosition);
+       // Debug.Log("Catheter model relative position = "+cathCenter.transform.GetChild(0).localPosition);
     }
 
     //Method to display the models of catheter and skull according to the markers positions
@@ -383,7 +398,9 @@ public class Simulator : MonoBehaviour
     private void RestartScene()
     {
         Debug.Log("Restart");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        index = 0;
+        readyToUpdate = true;
+        timer = 0;
     }
 }
-
