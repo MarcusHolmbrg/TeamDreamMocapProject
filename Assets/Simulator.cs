@@ -19,7 +19,7 @@ public class Simulator : MonoBehaviour
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter005.txt"; //path to tsv file
+    string path = "Assets/Recordings/catheter003.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
 
@@ -34,6 +34,27 @@ public class Simulator : MonoBehaviour
         z1, z2, z3, z4, z5, z6, z7, z8, z9, z10;
 
     public Slider slider; //slider to control the animation speed
+
+    //Custom transform coordinates for the skull
+    private Dictionary<String, Vector3> skullOffsetPos = new Dictionary<String, Vector3> {
+        {"Assets/Recordings/catheter001.txt",new Vector3(-0.939999998f,-14.1099997f,5.55000019f)}, //file : cathether001 NOT WELL ALIGNED
+        {"Assets/Recordings/catheter002.txt", new Vector3(-1.88f,-13.8599997f,4.67000008f) }, //file : cathether002 NOT WELL ALIGNED
+        {"Assets/Recordings/catheter003.txt", new Vector3(-1.10000002f,-14.1099997f,6.32000017f)}, //file : cathether003
+        {"Assets/Recordings/catheter004.txt",new Vector3(-1.28999996f,-13.4799995f,6.07999992f) }, //file : cathether004 NOT WELL ALIGNED
+        {"Assets/Recordings/catheter005.txt",new Vector3(-1.08000004f,-13.6199999f,6.5f) }, //file : cathether005
+        {"Assets/Recordings/catheter006.txt",new Vector3(-0.639999986f,-12.6899996f,5.57000017f) }, //file : cathether006
+        {"Assets/Recordings/catheter007.txt",new Vector3(-0.850000024f,-14.1099997f,5.6500001f) } //file : cathether007
+        };
+    private Dictionary<String, Vector3> skullOffsetRot = new Dictionary<String, Vector3> {
+        {"Assets/Recordings/catheter001.txt",new Vector3(38.116478f,177.862823f,358.404968f)}, //file : cathether001
+        {"Assets/Recordings/catheter002.txt", new Vector3(42.3742065f,181.589996f,3.92515182f) }, //file : cathether002
+        {"Assets/Recordings/catheter003.txt", new Vector3(43.9130974f,177.666306f,358.909271f) }, //file : cathether003
+        {"Assets/Recordings/catheter004.txt",new Vector3(42.3742065f,181.589996f,3.92515182f) }, //file : cathether004
+        {"Assets/Recordings/catheter005.txt",new Vector3(42.3742065f,181.589996f,3.92515182f) }, //file : cathether005
+        {"Assets/Recordings/catheter006.txt",new Vector3(42.3742104f,181.589996f,5.4209547f) }, //file : cathether006
+        {"Assets/Recordings/catheter007.txt",new Vector3(41.510006f,177.755005f,359.040009f) } //file : cathether007
+        };
+
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +97,10 @@ public class Simulator : MonoBehaviour
 
         //close reader
         sr.Close();
+
+        //set offset of skull depending on recording
+        //skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
+        //skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
     }
 
     // Update is called once per frame
@@ -300,3 +325,4 @@ public class Simulator : MonoBehaviour
         timeDelay = slider.value;
     }
 }
+
