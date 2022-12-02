@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - User
+  - Simulator
+  - VRSimulator
   layers:
   - Default
   - TransparentFX
