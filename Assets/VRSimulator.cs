@@ -19,9 +19,11 @@ public class VRSimulator : MonoBehaviour
     private Vector3 cathRight = Vector3.one;
     private Vector3 cathUp = Vector3.one;
     [SerializeField] private InputActionReference timeController = null;
+    [SerializeField] private InputActionReference transparencyController = null;
+    [SerializeField] private InputActionReference toggleTransparent = null;
     [SerializeField] private InputActionReference annotatePoint = null;
-    public Slider speedSlider;
-    public GameObject userObj;
+    private bool transparencyToggleInProgress = false;
+    
     public Text[] FrameStuff;
 
     float timeToCall;
@@ -36,6 +38,7 @@ public class VRSimulator : MonoBehaviour
     private float playBackSpeed = 1f;
     public float maxPlaybackSpeed = 50f;
     private float timer = 0;
+    private bool transparencyEnabled;
 
     //arrays with data from each row
     float[] field, time;
@@ -48,6 +51,14 @@ public class VRSimulator : MonoBehaviour
         z1, z2, z3, z4, z5, z6, z7, z8, z9, z10;
 
     public Slider slider; //slider to control the animation speed
+
+    public GameObject phantomSkull;
+    public GameObject phantomBrain;
+    private Material solidSkullMat;
+    private Material solidBrainMat;
+
+    public Material transparentSkullMat;
+    public Material transparentBrainMat;
 
     //Custom transform coordinates for the skull
     private Dictionary<String, Vector3> skullOffsetPos = new Dictionary<String, Vector3> {
@@ -78,8 +89,6 @@ public class VRSimulator : MonoBehaviour
         paused = false;
         rewind = false;
         forward = true;
-
-        slider.onValueChanged.AddListener(delegate { ChangeSpeed(); });
 
         timeToCall = timeDelay;
 
@@ -117,19 +126,21 @@ public class VRSimulator : MonoBehaviour
         //set offset of skull depending on recording
         skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
         skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
+
+        SetInitialColors();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            Debug.Log("Annotated Point " + index);
-        }
+
         Vector2 timeInputVal = timeController.action.ReadValue<Vector2>();
+        Vector2 transparencyInputVal = transparencyController.action.ReadValue<Vector2>();
+        float toggleVal = toggleTransparent.action.ReadValue<float>();
+
         if (timeInputVal != Vector2.zero)
         {
             //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
-            if(timeInputVal.x > 0.1)
+            if(timeInputVal.x > 0.7)
             {
                 rewind = false;
                 forward = true;
@@ -143,18 +154,30 @@ public class VRSimulator : MonoBehaviour
             {
                 if (playBackSpeed < maxPlaybackSpeed)
                 {
-                    playBackSpeed += maxPlaybackSpeed / 2f * -timeInputVal.y * Time.deltaTime;
+                    if (paused)
+                    {
+                        paused = false;
+                    }
+                    playBackSpeed += maxPlaybackSpeed / 2f * timeInputVal.y * Time.deltaTime;
                 }
             }
             else if (timeInputVal.y < -0.6f)
             {
                 if (playBackSpeed > 1f)
                 {
-                    playBackSpeed -= maxPlaybackSpeed / 2f * timeInputVal.y * Time.deltaTime;
+                    playBackSpeed -= maxPlaybackSpeed / 2f * -timeInputVal.y * Time.deltaTime;
+                }
+                else
+                {
+                    paused = true;
+                }
+            if(playBackSpeed < 0.1f && !paused)
+                {
+                    playBackSpeed = 0.5f;
                 }
 
 
-               // Debug.Log(playBackSpeed);
+               Debug.Log(playBackSpeed);
             }
             if (slider)
             {
@@ -164,6 +187,19 @@ public class VRSimulator : MonoBehaviour
             //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
         }
+        Debug.Log("b " + toggleVal);
+        if (toggleVal > 0.8f && !transparencyToggleInProgress)
+        {
+            Debug.Log(toggleVal);
+            transparencyToggleInProgress = true;
+            ToggleTransparency();
+        }
+        else if(toggleVal < 0.1f && transparencyToggleInProgress)
+        {
+            transparencyToggleInProgress = false;
+        }
+
+
         if (Input.GetKeyDown(KeyCode.R))
         {
 
@@ -203,7 +239,7 @@ public class VRSimulator : MonoBehaviour
                 readyToUpdate = false; //stop simulation if eod is reached
             }
 
-            if (rewind && index >= 0){
+            if (rewind && index > 0){
                 index--;
             }
 
@@ -217,8 +253,7 @@ public class VRSimulator : MonoBehaviour
                 Invoke(nameof(RestartScene), 1f);
             }
             timer = 0f;
-            timeToCall = timeDelay / playBackSpeed;
-            Debug.Log("Time2Call: " + timeToCall);
+            timeToCall = timeDelay / playBackSpeed; 
             AlignModels();
             if (FrameStuff[0])
             {
@@ -331,7 +366,7 @@ public class VRSimulator : MonoBehaviour
             //string[] temp = line.Split("\t");
             int runtimeField = Int32.Parse(temp[0]); //current array id
 
-            Debug.Log(runtimeField);
+            //Debug.Log(runtimeField);
 
             //populate arrays
             field[runtimeField] = runtimeField + 1.0f;
@@ -341,7 +376,7 @@ public class VRSimulator : MonoBehaviour
             //marker tree attached to the skull
 
             //float test = float.Parse(temp[2] + 36f);
-            Debug.Log(temp[2]);
+            //Debug.Log(temp[2]);
 
             headTopLeft[runtimeField, 0] = float.Parse(temp[2], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull 1 x
             headTopLeft[runtimeField, 1] = float.Parse(temp[4], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull 1 y
@@ -415,11 +450,6 @@ public class VRSimulator : MonoBehaviour
         }
     }
 
-    private void ChangeSpeed()
-    {
-        //timeDelay = slider.value;
-    }
-
     private void RestartScene()
     {
         Debug.Log("Restart");
@@ -427,5 +457,84 @@ public class VRSimulator : MonoBehaviour
         index = 0;
         readyToUpdate = true;
         timer = 0;
+    }
+
+    private void ToggleTransparency()
+    {
+        Debug.Log("umm" + transparencyEnabled);
+        Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
+        if (!transparencyEnabled)
+        {
+            SkullTransparent();
+            BrainTransparent();
+            transparencyEnabled = true;
+        }
+        else if (transparencyEnabled)
+        {
+            SkullSolid();
+            BrainSolid();
+            transparencyEnabled = false;
+        }
+    }
+    private void SetInitialColors()
+    {
+        Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
+        solidSkullMat = skullRenderer.material;
+        Renderer brainRenderer = phantomBrain.GetComponent<Renderer>();
+        solidBrainMat = brainRenderer.material;
+    }
+    private void SkullTransparent()
+    {
+        Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
+        skullRenderer.material = transparentSkullMat;
+    }
+    private void BrainTransparent()
+    {
+        Renderer brainRenderer = phantomBrain.GetComponent<Renderer>();
+        brainRenderer.material = transparentBrainMat;
+    }
+    private void AdjustTransparency(float val)
+    {
+        Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
+        Color newSkullColor = skullRenderer.material.color;
+
+        //Debug.Log(newSkullColor.a + " | " + 255 + "-" + (val + 1) + " | " + (newSkullColor.a > (val + 1)) + (newSkullColor.a < 255 - (val + 1)));
+
+        if (newSkullColor.a > (val + 1) && newSkullColor.a < 255 - (val + 1))
+        {
+            newSkullColor.a += (int)val * Time.deltaTime;
+        }
+        skullRenderer.material.color = newSkullColor;
+        transparentSkullMat = skullRenderer.material;
+
+        Renderer brainRenderer = phantomBrain.GetComponent<Renderer>();
+        Color newBrainColor = brainRenderer.material.color;
+
+        if (newBrainColor.a > (val + 1) && newBrainColor.a < 255 - (val + 1))
+        {
+            newBrainColor.a += (int)val * Time.deltaTime;
+        }
+        brainRenderer.material.color = newBrainColor;
+        //Debug.Log(skullRenderer.material.color + " | " + brainRenderer.material.color);
+
+        transparentBrainMat = brainRenderer.material;
+
+    }
+
+    private void SkullSolid()
+    {
+        Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
+        skullRenderer.material = solidSkullMat;
+    }
+
+
+    private void BrainSolid()
+    {
+        Renderer brainRenderer = phantomBrain.GetComponent<Renderer>();
+        brainRenderer.material = solidBrainMat;
+    }
+    public int GetCurrentIndex()
+    {
+        return index;
     }
 }

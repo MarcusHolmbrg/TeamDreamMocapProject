@@ -79,7 +79,7 @@ public class AnnotationScript : MonoBehaviour
                 desktopLineRenderer.SetPosition(desktopLineRenderer.positionCount - 1, hit.point);
                 if (annotationIndex.Equals(0))
                 {
-                    //AnnotationPoint1.transform.position = hit.point;
+                    AnnotationPoint1.transform.position = hit.point;
                 }
                 if (annotationIndex.Equals(1))
                 {
@@ -95,7 +95,6 @@ public class AnnotationScript : MonoBehaviour
         
         if(annotationIndex.Equals(0))
         {
-            Debug.Log("Init" + annotationIndex);
             AnnotationPoint1.SetActive(true);
         }
         

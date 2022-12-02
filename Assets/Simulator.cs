@@ -172,7 +172,7 @@ public class Simulator : MonoBehaviour
                 paused = true;
             }
 
-            if(playBackSpeed < 0.25f)
+            if(playBackSpeed < 0.1f && !paused)
             {
                 playBackSpeed = 0.5f;
             }

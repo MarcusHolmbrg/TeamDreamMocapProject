@@ -587,6 +587,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6452418116624880902, guid: d73ca582722265e4cada515025d841f9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 6452418116624880902, guid: d73ca582722265e4cada515025d841f9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 6452418116624880902, guid: d73ca582722265e4cada515025d841f9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 6452418116624880902, guid: d73ca582722265e4cada515025d841f9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -624,6 +636,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6452418116624880902, guid: d73ca582722265e4cada515025d841f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6452418116624880902, guid: d73ca582722265e4cada515025d841f9, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -869,6 +885,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 16.53, y: -49.2, z: 0}
+--- !u!1 &871440449 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2347310960519755226, guid: 640b77c6db082284581f0688e97aa8fe, type: 3}
+  m_PrefabInstance: {fileID: 1246859753}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &905618920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1352,6 +1373,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2347310960519755230, guid: 640b77c6db082284581f0688e97aa8fe, type: 3}
   m_PrefabInstance: {fileID: 1246859753}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1383293475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6452418116624880898, guid: d73ca582722265e4cada515025d841f9, type: 3}
+  m_PrefabInstance: {fileID: 589216707}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1406889821
 GameObject:
@@ -2623,9 +2649,9 @@ MonoBehaviour:
   desktopLineRenderer: {fileID: 0}
   annotationIndex: 0
   annotationPoints: 
-  AnnotationMarkers: []
-  AnnotationPoint1: {fileID: 6452418116624880898, guid: d73ca582722265e4cada515025d841f9, type: 3}
-  AnnotationPoint2: {fileID: 2347310960519755226, guid: 640b77c6db082284581f0688e97aa8fe, type: 3}
+  annotationMarkers: []
+  AnnotationPoint1: {fileID: 1383293475}
+  AnnotationPoint2: {fileID: 871440449}
 --- !u!1 &2024963423 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2296330363848456485, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}

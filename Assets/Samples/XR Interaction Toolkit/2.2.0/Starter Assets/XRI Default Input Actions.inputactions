@@ -278,6 +278,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ToggleTransparency",
+                    "type": "Value",
+                    "id": "c5116fa6-97cf-4525-a29e-72daeed8885f",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "AdjustTransparency",
+                    "type": "Value",
+                    "id": "3aed58d9-cf69-420d-aa8e-31c2791323c2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -366,6 +384,50 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "38fffa59-2ef0-4cba-87e7-8236ae9884d3",
+                    "path": "<ValveIndexController>{RightHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AdjustTransparency",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "15e3d9ba-0b7c-4dce-9172-728c92de29cf",
+                    "path": "<ViveController>{RightHand}/trackpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AdjustTransparency",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c11a4d52-6bec-46c5-95b0-76e31bd5b743",
+                    "path": "<ValveIndexController>{RightHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleTransparency",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fa189313-90f5-4cba-9b5c-c3f956b04fdb",
+                    "path": "<ViveController>{RightHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleTransparency",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -880,7 +942,7 @@
                 {
                     "name": "",
                     "id": "068e4d07-3643-4c35-9352-aeb542188b5e",
-                    "path": "<XRController>{RightHand}/trackpad",
+                    "path": "<ValveIndexController>{RightHand}/thumbstick",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",

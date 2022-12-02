@@ -888,15 +888,29 @@ MonoBehaviour:
   skullCenterRot: {x: 0, y: 0, z: 0, w: 0}
   leftVRController: {fileID: 99851664}
   timeController: {fileID: 4826890894652462616, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  transparencyController: {fileID: 6826371102190220578, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  toggleTransparent: {fileID: -2425372059492432088, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   annotatePoint: {fileID: -6305722980727576620, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  speedSlider: {fileID: 2031703441}
-  userObj: {fileID: 0}
   FrameStuff:
   - {fileID: 1654160213}
   - {fileID: 1178738489}
   - {fileID: 425814907}
   maxPlaybackSpeed: 150
   slider: {fileID: 2031703441}
+  phantomSkull: {fileID: 1554036188}
+  phantomBrain: {fileID: 1554036187}
+  transparentSkullMat: {fileID: 2100000, guid: 6851123c4974f894a9765c2d6be86ae9, type: 2}
+  transparentBrainMat: {fileID: 2100000, guid: c055b4f1f2e70a74a9ccf1aec5c39279, type: 2}
+--- !u!1 &1554036187 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 30429248745398415, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
+  m_PrefabInstance: {fileID: 251215859}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1554036188 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7657081017659370345, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
+  m_PrefabInstance: {fileID: 251215859}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1578059118
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1618,7 +1632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2490345693382121344, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.446
+      value: 0.651
       objectReference: {fileID: 0}
     - target: {fileID: 2490345693382121344, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1638,11 +1652,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2490345693382121344, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.494
+      value: -0.303
       objectReference: {fileID: 0}
     - target: {fileID: 2490345693382121344, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1.007
+      value: -0.207
       objectReference: {fileID: 0}
     - target: {fileID: 2490345693382121344, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1667,6 +1681,10 @@ PrefabInstance:
     - target: {fileID: 2490345693536978468, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_MaxValue
       value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490345693536978468, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
+      propertyPath: m_MinValue
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2490345693536978468, guid: 2d4dcac876545114a9b90569597da1b2, type: 3}
       propertyPath: m_Direction
