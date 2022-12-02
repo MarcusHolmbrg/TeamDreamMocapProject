@@ -25,9 +25,9 @@ public class VRSimulator : MonoBehaviour
     public Text[] FrameStuff;
 
     float timeToCall;
-    float timeDelay = 1.0f; //the code will be run every 2 seconds
+    float timeDelay = 0.02f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter005.txt"; //path to tsv file
+    string path = "Assets/Recordings/tutoData.txt"; //path to tsv file : catheter00X.txt or tutoData.txt for the tutorial
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
     bool paused;
@@ -69,6 +69,9 @@ public class VRSimulator : MonoBehaviour
         {"Assets/Recordings/catheter006.txt",new Vector3(42.3742104f,181.589996f,5.4209547f) }, //file : cathether006
         {"Assets/Recordings/catheter007.txt",new Vector3(41.510006f,177.755005f,359.040009f) } //file : cathether007
         };
+
+
+    private Vector3 tutoCatheterOffset = new Vector3(-0.3180000029f, 1.581f, 0);//new Vector3(0.217999995f, 0.232999995f, -01.000899999985f);
 
     // Start is called before the first frame update
     void Start()
@@ -116,8 +119,18 @@ public class VRSimulator : MonoBehaviour
         sr.Close();
 
         //set offset of skull depending on recording
-        skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
-        skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
+        if (path == "Assets/Recordings/tutoData.txt")
+        {
+            cathCenter.transform.position = tutoCatheterOffset;
+            cathCenter.transform.localEulerAngles = new Vector3(0, 0, 55f);
+            skullCenter.gameObject.transform.GetChild(0).transform.localPosition = new Vector3(-40.4f, 102.06f, 6.27f);
+        }
+        else
+        {
+            skullCenter.gameObject.transform.GetChild(0).transform.localPosition = skullOffsetPos[path];
+            skullCenter.gameObject.transform.GetChild(0).transform.localEulerAngles = skullOffsetRot[path];
+            cathCenter.gameObject.transform.GetChild(0).transform.localPosition = new Vector3(0, -24.3799992f, -0.200000003f);
+        }
     }
 
     private void Update()
@@ -233,14 +246,26 @@ public class VRSimulator : MonoBehaviour
     //Method to display the models of catheter and skull according to the markers positions
     private void AlignModels()
     {
-        //Align orientation of the catheter
-        cathRight = cathTL.transform.position - cathTR.transform.position;
-        cathUp = cathTR.transform.position - cathBR.transform.position - Vector3.Project(cathTR.transform.position - cathBR.transform.position, cathRight);
-        cathCenter.transform.rotation = Quaternion.LookRotation(cathRight,cathUp);
-        //Align positions at the barycenter
-        cathCenter.transform.position = new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f);
-        skullCenter.transform.position = new Vector3((x6 + x7 + x8 + x9 + x10) / 5.0f, (y6 + y7 + y8 + y9 + y10) / 5.0f, (z6 + z7 + z8 + z9 + z10) / 5.0f);
-        
+        if (path == "Assets/Recordings/tutoData.txt")
+        {
+            //cathCenter.transform.Translate(new Vector3((x6 + x7 + x8 + x9 + x10) / 5000.0f,0,0), Space.Self);
+            cathCenter.transform.position = tutoCatheterOffset + (x6 + x7 + x8 + x9 + x10) / 5.0f * cathCenter.transform.right;
+            /*Debug.Log("x1 = " + x1);
+            Debug.Log(cathCenter.transform.position);
+            Debug.Log("offset = " + tutoCatheterOffset);
+            Debug.Log(new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f));
+        */
+        }
+        else
+        {
+            //Align orientation of the catheter
+            cathRight = cathTL.transform.position - cathTR.transform.position;
+            cathUp = cathTR.transform.position - cathBR.transform.position - Vector3.Project(cathTR.transform.position - cathBR.transform.position, cathRight);
+            cathCenter.transform.rotation = Quaternion.LookRotation(cathRight, cathUp);
+            //Align positions at the barycenter
+            cathCenter.transform.position = new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f);
+            skullCenter.transform.position = new Vector3((x6 + x7 + x8 + x9 + x10) / 5.0f, (y6 + y7 + y8 + y9 + y10) / 5.0f, (z6 + z7 + z8 + z9 + z10) / 5.0f);
+        }
     }
 
     //method to normalize coordinates in Unity scene
