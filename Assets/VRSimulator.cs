@@ -21,7 +21,6 @@ public class VRSimulator : MonoBehaviour
     [SerializeField] private InputActionReference timeController = null;
     [SerializeField] private InputActionReference transparencyController = null;
     [SerializeField] private InputActionReference toggleTransparent = null;
-    [SerializeField] private InputActionReference annotatePoint = null;
     private bool transparencyToggleInProgress = false;
     
     public Text[] FrameStuff;
@@ -177,7 +176,7 @@ public class VRSimulator : MonoBehaviour
                 }
 
 
-               Debug.Log(playBackSpeed);
+               //Debug.Log(playBackSpeed);
             }
             if (slider)
             {
@@ -187,7 +186,7 @@ public class VRSimulator : MonoBehaviour
             //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
         }
-        Debug.Log("b " + toggleVal);
+        //Debug.Log("b " + toggleVal);
         if (toggleVal > 0.8f && !transparencyToggleInProgress)
         {
             Debug.Log(toggleVal);
