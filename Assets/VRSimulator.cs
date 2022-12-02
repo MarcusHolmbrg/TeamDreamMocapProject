@@ -25,7 +25,7 @@ public class VRSimulator : MonoBehaviour
     public Text[] FrameStuff;
 
     float timeToCall;
-    float timeDelay = 0.02f; //the code will be run every 2 seconds
+    float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
     string path = "Assets/Recordings/tutoData.txt"; //path to tsv file : catheter00X.txt or tutoData.txt for the tutorial
     int index, fileSize; //index to cycle through arrays
