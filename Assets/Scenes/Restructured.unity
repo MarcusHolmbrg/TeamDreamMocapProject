@@ -317,6 +317,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &151644153 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 30429248745398415, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
+  m_PrefabInstance: {fileID: 2296330364526986362}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &151644157
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151644153}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 99327f9707667ee4292649ad531cb226, type: 3}
 --- !u!1 &180723169
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,13 +1131,16 @@ MonoBehaviour:
   skullCenter: {fileID: 1163806059}
   cathCenterRot: {x: 0, y: 0, z: 0, w: 0}
   skullCenterRot: {x: 0, y: 0, z: 0, w: 0}
-  leftVRController: {fileID: 0}
   FrameStuff:
   - {fileID: 1580839027}
   - {fileID: 1411628064}
   - {fileID: 1971000954}
   maxPlaybackSpeed: 150
   slider: {fileID: 2031703441}
+  phantomSkull: {fileID: 1846270812}
+  phantomBrain: {fileID: 151644153}
+  transparentSkullMat: {fileID: 0}
+  transparentBrainMat: {fileID: 0}
 --- !u!4 &1406889823
 Transform:
   m_ObjectHideFlags: 0
@@ -2037,6 +2059,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d4bb8c785fef5604dadbb4eb730dedc5, type: 3}
   m_PrefabInstance: {fileID: 1717770323}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1846270812 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7657081017659370345, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
+  m_PrefabInstance: {fileID: 2296330364526986362}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1846270816
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1846270812}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 531df92bbcf62aa4882a1ea1250a91dc, type: 3}
 --- !u!1 &1914022100
 GameObject:
   m_ObjectHideFlags: 0
