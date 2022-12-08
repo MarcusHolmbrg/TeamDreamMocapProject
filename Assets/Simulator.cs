@@ -25,7 +25,7 @@ public class Simulator : MonoBehaviour
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter005.txt"; //path to tsv file
+    string path = "Assets/Recordings/catheter006.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
     bool paused;
@@ -187,7 +187,7 @@ public class Simulator : MonoBehaviour
                 }
                 playBackSpeed += maxPlaybackSpeed / 2f * Time.deltaTime;
             }
-            Debug.Log(playBackSpeed);
+            //Debug.Log(playBackSpeed);
         }
         if (slider)
         {
@@ -462,7 +462,6 @@ public class Simulator : MonoBehaviour
 
     private void ToggleTransparency()
     {
-        Debug.Log("umm" + transparencyEnabled);
         Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
         if (!transparencyEnabled)
         {

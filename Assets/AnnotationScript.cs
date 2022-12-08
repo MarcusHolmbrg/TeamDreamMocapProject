@@ -20,11 +20,11 @@ public class AnnotationScript : MonoBehaviour
     public GameObject AnnotationPoint2;
 
     private MeshCollider BrainCollider;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        if(isDesktopVersion)
+        if (isDesktopVersion)
         {
             desktopLineRenderer = GetComponentInChildren<LineRenderer>();
             deskTopSim = GameObject.FindGameObjectWithTag("Simulator").GetComponent<Simulator>();
@@ -61,7 +61,7 @@ public class AnnotationScript : MonoBehaviour
         {
             annotationPoints[annotationIndex] = 0;
             annotationIndex -= 1;
-            
+
             annotationMarkers.RemoveAt(annotationMarkers.Count - 1);
         }
 
@@ -70,11 +70,10 @@ public class AnnotationScript : MonoBehaviour
         {
             RaycastHit hit;
 
-            if(Physics.Raycast(LineOrigin.position, LineOrigin.forward, out hit))
+            if (Physics.Raycast(LineOrigin.position, LineOrigin.forward, out hit))
             {
                 annotationPoint = hit.point;
 
-                Debug.Log("itsCtiv");
                 desktopLineRenderer.SetPosition(0, LineOrigin.position);
                 desktopLineRenderer.SetPosition(desktopLineRenderer.positionCount - 1, hit.point);
                 if (annotationIndex.Equals(0))
@@ -92,13 +91,13 @@ public class AnnotationScript : MonoBehaviour
     }
     private void InitiateAnnotation()
     {
-        
-        if(annotationIndex.Equals(0))
+
+        if (annotationIndex.Equals(0))
         {
             AnnotationPoint1.SetActive(true);
         }
-        
-        if(annotationIndex.Equals(1))
+
+        if (annotationIndex.Equals(1))
         {
             AnnotationPoint2.SetActive(true);
         }
@@ -106,7 +105,7 @@ public class AnnotationScript : MonoBehaviour
         if (isDesktopVersion)
         {
             desktopLineRenderer.enabled = true;
-            
+
         }
         else
         {
@@ -117,7 +116,7 @@ public class AnnotationScript : MonoBehaviour
 
     private void ExecuteAnnotation()
     {
-        Debug.Log("Annotated point " + annotationIndex + 1 + "| Position: " + annotationPoint + "| Time: " + deskTopSim.GetCurrentIndex());
+        Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint.x  + " " + annotationPoint.y + " "+ annotationPoint.z +"| Time: " + deskTopSim.GetCurrentIndex()) ;
         if (isDesktopVersion)
         {
 
@@ -129,12 +128,12 @@ public class AnnotationScript : MonoBehaviour
         }
         laserActive = false;
         annotationIndex += 1;
-        if(annotationIndex == 1)
+        if (annotationIndex == 1 || annotationIndex == 2)
         {
             BrainCollider.enabled = false;
             AnnotationPoint1.SetActive(false);
+            AnnotationPoint2.SetActive(false);
             annotationMarkers.Add(Instantiate(AnnotationPoint1, annotationPoint, Quaternion.identity));
-            
         }
         else
         {
