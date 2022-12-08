@@ -59,8 +59,8 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
-*.exe
-*.dll
+#*.exe
+#*.dll
 MonoBleedingEdge/*
 
 # Crashlytics generated file
