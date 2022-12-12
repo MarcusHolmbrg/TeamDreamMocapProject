@@ -30,3 +30,11 @@ In order to reproduce the experiment, follow these steps:
  - Go to the Scenes folder, and open the VRScene scene. 
  - Go to the Scripts folder. Open VRSimulator.cs. On line 32, change the file name according to the number of the recording you want to play. For recording catheter006, the path should be *"Assets/Recordings/catheter006.txt"*. Save it.
  - Run the scene. A ray should go out of your right hand. If not, swap your controllers.
+
+ **Illustrations**
+
+![desktop_setup](Illustrations/user_desktop.png)
+Here is our setup for the desktop version. The user has has mouse and a keyboard, and looks at the big screen in front of him/her. 
+
+![inside_desktop](Illustrations/HighAccuracyTest.png)
+The above picture shows how the skull, brain and ventricules look when the transparency is toggled. The markers are placed and visible as four small spheres. 
