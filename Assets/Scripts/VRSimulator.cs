@@ -8,6 +8,16 @@ using JetBrains.Annotations;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+/*
+  VR version of script for running the simulation and manipulating certain
+  aspects of it. Added functions for controlling playback speed of animation
+  (left and right on the touchpad of the right controller), rewinding/playing
+  (up and down on the touchpad of the right controller) and for toggling the
+  transparency of the brain and skull on and off (trigger on the back of the
+  left controller). Some additional functions exist in the script but were not
+  working as intended before user tests were held and therefore not used.
+*/
+
 public class VRSimulator : MonoBehaviour
 {
     public GameObject cathTop, cathTL, cathTR, cathBL, cathBR,
@@ -23,7 +33,7 @@ public class VRSimulator : MonoBehaviour
     [SerializeField] private InputActionReference toggleTransparent = null;
     [SerializeField] private InputActionReference annotatePoint = null;
     private bool transparencyToggleInProgress = false;
-    
+
     public Text[] FrameStuff;
 
     float timeToCall;
@@ -95,7 +105,7 @@ public class VRSimulator : MonoBehaviour
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
 
-        //initialize offset for 3dmodels 
+        //initialize offset for 3dmodels
         cathCenterRot = cathCenter.transform.rotation;
         skullCenterRot = skullCenter.transform.rotation;  //==> Should be hardcoded and set to private once we have the right alignment
 
@@ -139,7 +149,7 @@ public class VRSimulator : MonoBehaviour
 
         if (timeInputVal != Vector2.zero)
         {
-            //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
+            // The input values might need to be adjusted based on hardware
             if(timeInputVal.x > 0.7)
             {
                 rewind = false;
@@ -171,6 +181,7 @@ public class VRSimulator : MonoBehaviour
                 {
                     paused = true;
                 }
+
             if(playBackSpeed < 0.1f && !paused)
                 {
                     playBackSpeed = 0.5f;
@@ -179,6 +190,7 @@ public class VRSimulator : MonoBehaviour
 
                Debug.Log(playBackSpeed);
             }
+
             if (slider)
             {
                 slider.value = playBackSpeed;
@@ -188,6 +200,7 @@ public class VRSimulator : MonoBehaviour
 
         }
         Debug.Log("b " + toggleVal);
+
         if (toggleVal > 0.8f && !transparencyToggleInProgress)
         {
             Debug.Log(toggleVal);
@@ -199,15 +212,11 @@ public class VRSimulator : MonoBehaviour
             transparencyToggleInProgress = false;
         }
 
-
         if (Input.GetKeyDown(KeyCode.R))
         {
-
             Invoke(nameof(RestartScene), 1f);
         }
 
-        // print("space is pressed");
-        //paused = !paused;
     }
 
     // Update is called once per frame
@@ -221,7 +230,7 @@ public class VRSimulator : MonoBehaviour
 
             //normalize positions
             Normalize();
-            
+
             //update marker positions
             cathTop.transform.position = new Vector3(x1, y1, z1);
             cathTL.transform.position = new Vector3(x2, y2, z2);
@@ -234,7 +243,7 @@ public class VRSimulator : MonoBehaviour
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
 
-            
+
             if (index >= fileSize){
                 readyToUpdate = false; //stop simulation if eod is reached
             }
@@ -253,7 +262,7 @@ public class VRSimulator : MonoBehaviour
                 Invoke(nameof(RestartScene), 1f);
             }
             timer = 0f;
-            timeToCall = timeDelay / playBackSpeed; 
+            timeToCall = timeDelay / playBackSpeed;
             AlignModels();
             if (FrameStuff[0])
             {
@@ -278,7 +287,7 @@ public class VRSimulator : MonoBehaviour
         //Align positions at the barycenter
         cathCenter.transform.position = new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f);
         skullCenter.transform.position = new Vector3((x6 + x7 + x8 + x9 + x10) / 5.0f, (y6 + y7 + y8 + y9 + y10) / 5.0f, (z6 + z7 + z8 + z9 + z10) / 5.0f);
-        
+
     }
 
     //method to normalize coordinates in Unity scene
@@ -295,7 +304,7 @@ public class VRSimulator : MonoBehaviour
         x8 = headBottomLeft[index, 0] / 1000.0f;
         x9 = headBottomRight[index, 0] / 1000.0f;
         x10 = headBrow[index, 0] / 1000.0f;
-        
+
         //y coordinate
         y1 = cathTip[index, 1] / 1000.0f;
         y2 = cathTopLeft[index, 1] / 1000.0f;
@@ -307,7 +316,7 @@ public class VRSimulator : MonoBehaviour
         y8 = headBottomLeft[index, 1] / 1000.0f;
         y9 = headBottomRight[index, 1] / 1000.0f;
         y10 = headBrow[index, 1] / 1000.0f;
-        
+
         //z coordinate
         z1 = cathTip[index, 2] / 1000.0f;
         z2 = cathTopLeft[index, 2] / 1000.0f;
@@ -401,7 +410,7 @@ public class VRSimulator : MonoBehaviour
             /* headBrow[runtimeField, 0] = float.Parse(temp[17], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow x
             headBrow[runtimeField, 1] = float.Parse(temp[19], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow y
             headBrow[runtimeField, 2] = float.Parse(temp[18], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow z
-            
+
             //marker tree attached to the catheter
             cathTip[runtimeField, 0] = float.Parse(temp[20], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 x
             cathTip[runtimeField, 1] = float.Parse(temp[22], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 y

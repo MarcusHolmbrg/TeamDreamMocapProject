@@ -2,6 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+  Script which enables annotation of points in both VR and desktop setting.
+
+  In VR, annotation is done by holding down the trigger on the back of the right
+  controller. This makes a laser shoot out of the controller which is used to
+  aim at the point to be annotated. When the trigger is released, the point
+  aimed at by the laser is annotated and a red or green marker (a sphere) is
+  placed at that point.
+
+  On desktop, annotation is done by holding down the spacebar key. This makes a
+  laser shoot out of from the observer which is used to assist in aiming at the
+  point to be annotated. The aiming itself is done by moving the mouse. When the
+  spacebar key is released, the point is annotated and a red or green marker (a
+  sphere) is placed at that point.
+
+  For both settings, the following applies:
+  The points have to be annotated in the following order: beginning of
+  insertion, end of insertion, beginning of extraction, end of extraction. This
+  is because of how collision detection is currently setup. For the first and
+  fourth annotations, the laser collides with the outer surface of the brain.
+  For the second and third annotations, the laser first penetrates the brain and
+  only collides with the ventricles. This setup was chosen based on our
+  definitions of the points that were to be annotated.
+*/
+
 public class AnnotationScript : MonoBehaviour
 {
     public bool isDesktopVersion = true; //False if VR version
@@ -42,6 +67,7 @@ public class AnnotationScript : MonoBehaviour
     {
         if (isDesktopVersion)
         {
+            // Spacebar key used for annotation
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 InitiateAnnotation();
@@ -56,12 +82,10 @@ public class AnnotationScript : MonoBehaviour
             //VR CONTROLLER ANNOTATION INPUT
         }
 
-
         if (Input.GetKeyDown(KeyCode.Return) && annotationIndex > 0)
         {
             annotationPoints[annotationIndex] = 0;
             annotationIndex -= 1;
-
             annotationMarkers.RemoveAt(annotationMarkers.Count - 1);
         }
 
@@ -86,7 +110,6 @@ public class AnnotationScript : MonoBehaviour
                 }
             }
 
-
         }
     }
     private void InitiateAnnotation()
@@ -105,7 +128,6 @@ public class AnnotationScript : MonoBehaviour
         if (isDesktopVersion)
         {
             desktopLineRenderer.enabled = true;
-
         }
         else
         {
@@ -119,7 +141,6 @@ public class AnnotationScript : MonoBehaviour
         Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint.x  + " " + annotationPoint.y + " "+ annotationPoint.z +"| Time: " + deskTopSim.GetCurrentIndex()) ;
         if (isDesktopVersion)
         {
-
             desktopLineRenderer.enabled = false;
         }
         else
@@ -142,8 +163,5 @@ public class AnnotationScript : MonoBehaviour
             annotationMarkers.Add(Instantiate(AnnotationPoint2, annotationPoint, Quaternion.identity));
         }
         annotationMarkers[annotationMarkers.Count - 1].SetActive(true);
-
-
-
     }
 }
