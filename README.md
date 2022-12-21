@@ -10,7 +10,12 @@ We recommend that you ensure that your space is large enough to avoid any risk o
 The following files are large files that were not uploaded to the GitHub due to GitHub size limit. 
 
  -  Brain asset, [download here](https://drive.google.com/drive/folders/16Udq9WilMrpLHSWjlSX2FE2UV7RKhFIf?usp=sharing) 
- - Build files, [download here](linkTBA) 
+ -  Build files, [download here](https://drive.google.com/drive/folders/1FRYA5DsCPTDdeCjxJsia8MhZr37weHdD?usp=sharing) 
+
+ In the build files, Desktop.zip contains the desktop version and VR.zip contains the VR version of our project. Note that there is currently
+ no way of switching which recording is being played in the builds. Also note that there is no way to see information such as the annotation time
+ in the build version, as we used the Unity console logs for displaying such information which is not visible in a compiled build. The build files 
+ come preconfigured so that the desktop version is playing recording 6 and the VR version is playing recording 5.
 
 ## Install and run the project
 In order to reproduce the experiment, follow these steps:
@@ -22,14 +27,16 @@ In order to reproduce the experiment, follow these steps:
  
 **For the desktop version:**
  - Go to the Scenes folder, and open the DesktopScene scene. 
- - Go to the Scripts folder. Open Simulator.cs. On line 28, change the file name according to the number of the recording you want to play. For recording catheter006, the path should be *"Assets/Recordings/catheter006.txt"*. Save it.
+ - Go to the Scripts folder. Open Simulator.cs. On line 35, change the file name according to the number of the recording you want to play. For recording catheter006, the path should be *"Assets/Recordings/catheter006.txt"*. Save it.
  - Run the scene.
  
 **For the VR version:**
  - Check that you have SteamVR installed on your computer. Launch SteamVR. Check that the headset and controllers are well connected.
  - Go to the Scenes folder, and open the VRScene scene. 
- - Go to the Scripts folder. Open VRSimulator.cs. On line 32, change the file name according to the number of the recording you want to play. For recording catheter006, the path should be *"Assets/Recordings/catheter006.txt"*. Save it.
+ - Go to the Scripts folder. Open VRSimulator.cs. On line 41, change the file name according to the number of the recording you want to play. For recording catheter006, the path should be *"Assets/Recordings/catheter006.txt"*. Save it.
  - Run the scene. A ray should go out of your right hand. If not, swap your controllers.
+
+More detailed instructions containing control schemes as well as additional information on running the project can be found in [this document] (https://docs.google.com/document/d/1GC-xSK3XdPcphokTiqTdBISnV-ebJ-0fEk4kww-Skn0/edit?usp=sharing).
 
  ## Illustrations
 
