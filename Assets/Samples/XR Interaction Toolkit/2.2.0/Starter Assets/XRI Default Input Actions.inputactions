@@ -412,7 +412,7 @@
                 {
                     "name": "",
                     "id": "c11a4d52-6bec-46c5-95b0-76e31bd5b743",
-                    "path": "<ValveIndexController>{RightHand}/grip",
+                    "path": "<ValveIndexController>{LeftHand}/trigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -423,7 +423,7 @@
                 {
                     "name": "",
                     "id": "fa189313-90f5-4cba-9b5c-c3f956b04fdb",
-                    "path": "<ViveController>{RightHand}/grip",
+                    "path": "<ViveController>{LeftHand}/trigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -842,12 +842,12 @@
                 },
                 {
                     "name": "Annotatepoint",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "0959b956-8d2f-4af8-bf37-01b8257d84e5",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -964,7 +964,18 @@
                 {
                     "name": "",
                     "id": "0fe7afee-d138-470b-af56-832e3929f10c",
-                    "path": "<XRController>{RightHand}/gripPressed",
+                    "path": "<ViveController>{RightHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Annotatepoint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eabdebae-987e-4bda-9c2a-c17cee1c8e5a",
+                    "path": "<ValveIndexController>{RightHand}/trigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

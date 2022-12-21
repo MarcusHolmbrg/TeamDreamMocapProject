@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DesktopScene.unity
     guid: 4a8fc2f64b8bc2a4f842776128c7d197
+  - enabled: 1
+    path: Assets/Scenes/VRScene.unity
+    guid: 080fbbe8576ae6345a866de53b305f12
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2309782c514bf304aa7827a8fc88fe01, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: af9acb845f65ba944aa94a48d48b01c3, type: 2}

@@ -31,9 +31,8 @@ public class VRSimulator : MonoBehaviour
     [SerializeField] private InputActionReference timeController = null;
     [SerializeField] private InputActionReference transparencyController = null;
     [SerializeField] private InputActionReference toggleTransparent = null;
-    [SerializeField] private InputActionReference annotatePoint = null;
     private bool transparencyToggleInProgress = false;
-
+    
     public Text[] FrameStuff;
 
     float timeToCall;
@@ -105,7 +104,7 @@ public class VRSimulator : MonoBehaviour
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
 
-        //initialize offset for 3dmodels
+        //initialize offset for 3dmodels 
         cathCenterRot = cathCenter.transform.rotation;
         skullCenterRot = skullCenter.transform.rotation;  //==> Should be hardcoded and set to private once we have the right alignment
 
@@ -181,16 +180,14 @@ public class VRSimulator : MonoBehaviour
                 {
                     paused = true;
                 }
-
             if(playBackSpeed < 0.1f && !paused)
                 {
                     playBackSpeed = 0.5f;
                 }
 
 
-               Debug.Log(playBackSpeed);
+               //Debug.Log(playBackSpeed);
             }
-
             if (slider)
             {
                 slider.value = playBackSpeed;
@@ -199,8 +196,7 @@ public class VRSimulator : MonoBehaviour
             //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
         }
-        Debug.Log("b " + toggleVal);
-
+        //Debug.Log("b " + toggleVal);
         if (toggleVal > 0.8f && !transparencyToggleInProgress)
         {
             Debug.Log(toggleVal);
@@ -230,7 +226,7 @@ public class VRSimulator : MonoBehaviour
 
             //normalize positions
             Normalize();
-
+            
             //update marker positions
             cathTop.transform.position = new Vector3(x1, y1, z1);
             cathTL.transform.position = new Vector3(x2, y2, z2);
@@ -243,7 +239,7 @@ public class VRSimulator : MonoBehaviour
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
 
-
+            
             if (index >= fileSize){
                 readyToUpdate = false; //stop simulation if eod is reached
             }
@@ -262,7 +258,7 @@ public class VRSimulator : MonoBehaviour
                 Invoke(nameof(RestartScene), 1f);
             }
             timer = 0f;
-            timeToCall = timeDelay / playBackSpeed;
+            timeToCall = timeDelay / playBackSpeed; 
             AlignModels();
             if (FrameStuff[0])
             {
@@ -410,7 +406,7 @@ public class VRSimulator : MonoBehaviour
             /* headBrow[runtimeField, 0] = float.Parse(temp[17], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow x
             headBrow[runtimeField, 1] = float.Parse(temp[19], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow y
             headBrow[runtimeField, 2] = float.Parse(temp[18], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow z
-
+            
             //marker tree attached to the catheter
             cathTip[runtimeField, 0] = float.Parse(temp[20], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 x
             cathTip[runtimeField, 1] = float.Parse(temp[22], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 y
@@ -470,7 +466,7 @@ public class VRSimulator : MonoBehaviour
 
     private void ToggleTransparency()
     {
-        Debug.Log("umm" + transparencyEnabled);
+        //Debug.Log("umm" + transparencyEnabled);
         Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
         if (!transparencyEnabled)
         {
