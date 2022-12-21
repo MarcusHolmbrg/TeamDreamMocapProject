@@ -466,7 +466,7 @@ public class VRSimulator : MonoBehaviour
 
     private void ToggleTransparency()
     {
-        Debug.Log("umm" + transparencyEnabled);
+        //Debug.Log("umm" + transparencyEnabled);
         Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
         if (!transparencyEnabled)
         {

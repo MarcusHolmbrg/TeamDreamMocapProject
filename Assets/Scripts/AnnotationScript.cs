@@ -84,7 +84,7 @@ public class AnnotationScript : MonoBehaviour
         else
         {
             float toggleVal = annotatePoint.action.ReadValue<float>();
-            Debug.Log(toggleVal);
+            //Debug.Log(toggleVal);
             if (toggleVal > 0.8f && !annotationInProgress)
             {
                 //Debug.Log(toggleVal);
@@ -116,8 +116,12 @@ public class AnnotationScript : MonoBehaviour
                 annotationPoint = hit.point;
 
                 //Debug.Log("itsCtiv");
-                desktopLineRenderer.SetPosition(0, LineOrigin.position);
-                desktopLineRenderer.SetPosition(desktopLineRenderer.positionCount - 1, hit.point);
+                if (isDesktopVersion)
+                {
+                    desktopLineRenderer.SetPosition(0, LineOrigin.position);
+                    desktopLineRenderer.SetPosition(desktopLineRenderer.positionCount - 1, hit.point);
+                }
+
                 if (annotationIndex.Equals(0))
                 {
                     AnnotationPoint1.transform.position = hit.point;
@@ -159,12 +163,12 @@ public class AnnotationScript : MonoBehaviour
         Debug.Log("Execute");
         if (isDesktopVersion)
         {
-            Debug.Log("Annotated point " + annotationIndex + 1 + "| Position: " + annotationPoint + "| Time: " + deskTopSim.GetCurrentIndex());
+            Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint + "| Time: " + deskTopSim.GetCurrentIndex());
             desktopLineRenderer.enabled = false;
         }
         else
         {
-            Debug.Log("Annotated point " + annotationIndex + 1 + "| Position: " + annotationPoint + "| Time: " + vrSim.GetCurrentIndex());
+            Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint + "| Time: " + vrSim.GetCurrentIndex());
         }
         laserActive = false;
         annotationIndex += 1;

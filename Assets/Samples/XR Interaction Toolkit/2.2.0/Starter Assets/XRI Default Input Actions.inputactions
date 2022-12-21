@@ -971,6 +971,17 @@
                     "action": "Annotatepoint",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eabdebae-987e-4bda-9c2a-c17cee1c8e5a",
+                    "path": "<ValveIndexController>{RightHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Annotatepoint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
