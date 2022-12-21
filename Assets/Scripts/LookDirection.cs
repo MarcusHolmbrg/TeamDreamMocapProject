@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+  Script which enables changing orientation of the observer (rotates camera
+  around itself) using the mouse in the desktop setting. Adjust xSens and ySens
+  inside Unity to change the sensitivity (how much the camera rotates based on
+  mouse movements).
+*/
+
 public class LookDirection : MonoBehaviour
 {
     public float xSens;
@@ -29,8 +36,6 @@ public class LookDirection : MonoBehaviour
 
       // limits PoV up/down
       xRot = Mathf.Clamp(xRot, -90f, 90f);
-
-      //transform.rotation = Quaternion.Euler(xRot, yRot, 0);
 
       // rotate cam
       lookDir.rotation = Quaternion.Euler(xRot, yRot, 0);

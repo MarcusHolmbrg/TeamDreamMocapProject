@@ -59,7 +59,7 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
-*.exe
+.exe
 *.dll
 MonoBleedingEdge/*
 

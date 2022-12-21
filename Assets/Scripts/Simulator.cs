@@ -6,6 +6,15 @@ using System;
 using UnityEngine.UI;
 using JetBrains.Annotations;
 
+/*
+  Desktop version of script for running the simulation and manipulating certain
+  aspects of it. Added functions for controlling playback speed of animation
+  (left and right arrow keys), rewinding/playing (up and down arrows keys) and
+  for toggling the transparency of the brain and skull on and off (Q key). Some
+  additional functions exist in the script but were not working as intended
+  before user tests were held and therefore not used.
+*/
+
 
 public class Simulator : MonoBehaviour
 {
@@ -20,12 +29,10 @@ public class Simulator : MonoBehaviour
 
     public Text[] FrameStuff;
 
-
-
     float timeToCall;
     float timeDelay = 1.0f; //the code will be run every 2 seconds
     const string separator = "\t"; //tab separation string
-    string path = "Assets/Recordings/catheter005.txt"; //path to tsv file
+    string path = "Assets/Recordings/catheter006.txt"; //path to tsv file
     int index, fileSize; //index to cycle through arrays
     bool readyToUpdate;
     bool paused;
@@ -57,8 +64,6 @@ public class Simulator : MonoBehaviour
     public Material transparentSkullMat;
     public Material transparentBrainMat;
 
-
-
     //Custom transform coordinates for the skull
     private Dictionary<String, Vector3> skullOffsetPos = new Dictionary<String, Vector3> {
         {"Assets/Recordings/catheter001.txt",new Vector3(-0.939999998f,-14.1099997f,5.55000019f)}, //file : cathether001 NOT WELL ALIGNED
@@ -89,13 +94,12 @@ public class Simulator : MonoBehaviour
         rewind = false;
         forward = true;
 
-
         timeToCall = timeDelay;
 
         StreamReader sr = ReadFile(path); //read from file
         fileSize = FindSize(sr); //find size of file
 
-        //initialize offset for 3dmodels 
+        //initialize offset for 3dmodels
         cathCenterRot = cathCenter.transform.rotation;
         skullCenterRot = skullCenter.transform.rotation;  //==> Should be hardcoded and set to private once we have the right alignment
 
@@ -133,6 +137,7 @@ public class Simulator : MonoBehaviour
 
     private void Update()
     {
+        // Toggle transparency on and off with the Q key
         if (Input.GetKeyDown(KeyCode.Q))
         {
             ToggleTransparency();
@@ -148,19 +153,21 @@ public class Simulator : MonoBehaviour
                //AdjustTransparency(-10);
             }
         }
-        
 
+        // Right arrow key plays the animation in the right direction
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
             rewind = false;
             forward = true;
         }
+        // Left arrow key rewinds the animation
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             rewind = true;
             forward = false;
         }
+
+        // Down arrow key reduces playback speed of the animation
         if (Input.GetKey(KeyCode.DownArrow))
         {
             if (playBackSpeed > 0f)
@@ -172,11 +179,12 @@ public class Simulator : MonoBehaviour
                 paused = true;
             }
 
-            if(playBackSpeed < 0.1f && !paused)
+            if (playBackSpeed < 0.1f && !paused)
             {
                 playBackSpeed = 0.5f;
             }
         }
+        // Up arrow key increases playback speed of the animation
         else if (Input.GetKey(KeyCode.UpArrow))
         {
             if (playBackSpeed < maxPlaybackSpeed)
@@ -187,24 +195,19 @@ public class Simulator : MonoBehaviour
                 }
                 playBackSpeed += maxPlaybackSpeed / 2f * Time.deltaTime;
             }
-            Debug.Log(playBackSpeed);
         }
+        // The slider visible in the scene displays current playback speed
         if (slider)
         {
             slider.value = playBackSpeed;
         }
-        //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
+        // R key restarts scene
         if (Input.GetKeyDown(KeyCode.R))
         {
-
             Invoke(nameof(RestartScene), 1f);
         }
-
-        // print("space is pressed");
-        //paused = !paused;
     }
-
 
     // Update is called once per frame
     void FixedUpdate()
@@ -212,9 +215,6 @@ public class Simulator : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= timeToCall && MarkerCheck() && fileSize > 0 && readyToUpdate && !paused)
         {
-
-           // Debug.Log("FrameCount: " + index);
-
             //normalize positions
             Normalize();
 
@@ -229,7 +229,6 @@ public class Simulator : MonoBehaviour
             skullBL.transform.position = new Vector3(x8, y8, z8);
             skullBR.transform.position = new Vector3(x9, y9, z9);
             skullBrow.transform.position = new Vector3(x10, y10, z10);
-
 
             if (index >= fileSize)
             {
@@ -253,8 +252,8 @@ public class Simulator : MonoBehaviour
             }
             timer = 0f;
             timeToCall = timeDelay / playBackSpeed;
-            //Debug.Log("Time2Call: " + timeToCall);
             AlignModels();
+
             if (FrameStuff[0])
             {
                 FrameStuff[0].text = "Current frame: " + index;
@@ -401,7 +400,7 @@ public class Simulator : MonoBehaviour
             /* headBrow[runtimeField, 0] = float.Parse(temp[17], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow x
             headBrow[runtimeField, 1] = float.Parse(temp[19], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow y
             headBrow[runtimeField, 2] = float.Parse(temp[18], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //skull brow z
-            
+
             //marker tree attached to the catheter
             cathTip[runtimeField, 0] = float.Parse(temp[20], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 x
             cathTip[runtimeField, 1] = float.Parse(temp[22], System.Globalization.CultureInfo.InvariantCulture.NumberFormat); //catheter 1 y
@@ -462,7 +461,6 @@ public class Simulator : MonoBehaviour
 
     private void ToggleTransparency()
     {
-        Debug.Log("umm" + transparencyEnabled);
         Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
         if (!transparencyEnabled)
         {
@@ -539,4 +537,3 @@ public class Simulator : MonoBehaviour
         return index;
     }
 }
-
