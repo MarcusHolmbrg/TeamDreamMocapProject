@@ -160,15 +160,15 @@ public class AnnotationScript : MonoBehaviour
 
     private void ExecuteAnnotation()
     {
-        Debug.Log("Execute");
+        
         if (isDesktopVersion)
         {
-            Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint + "| Time: " + deskTopSim.GetCurrentIndex());
+            Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint.x + " " + annotationPoint.y + " " + annotationPoint.z + "| Time: " + deskTopSim.GetCurrentIndex());
             desktopLineRenderer.enabled = false;
         }
         else
         {
-            Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint + "| Time: " + vrSim.GetCurrentIndex());
+            Debug.Log("Annotated point " + annotationIndex + "| Position: " + annotationPoint.x + " " + annotationPoint.y + " " + annotationPoint.z + "| Time: " + vrSim.GetCurrentIndex());
         }
         laserActive = false;
         annotationIndex += 1;
