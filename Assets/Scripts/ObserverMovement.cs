@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+  Script which enables full 3D movement of the observer in the desktop setting
+  using the WASD keys.
+  Adjust moveSpeed in Unity to change the movement speed.
+*/
+
 public class ObserverMovement : MonoBehaviour
 {
     public float moveSpeed;

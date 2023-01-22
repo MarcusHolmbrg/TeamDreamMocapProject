@@ -2650,6 +2650,7 @@ MonoBehaviour:
   annotationIndex: 0
   annotationPoints: 
   annotationMarkers: []
+  annotatePoint: {fileID: 0}
   AnnotationPoint1: {fileID: 1383293475}
   AnnotationPoint2: {fileID: 871440449}
 --- !u!1 &2024963423 stripped
@@ -3268,7 +3269,7 @@ PrefabInstance:
     - target: {fileID: 6200642084814998270, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -2432090755550338912, guid: cd4f74b8ddd0d2f4fba96cce38e2ff9d, type: 3}
+      objectReference: {fileID: -2432090755550338912, guid: e521e99d6d24ebc4c81363e86f057f98, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
 --- !u!1 &2296330364526986363 stripped
@@ -3281,7 +3282,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7657081017659370345, guid: 9c28aa559343c354c9ee32e4321edee7, type: 3}
   m_PrefabInstance: {fileID: 2296330364526986362}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &2296330364526986375
+--- !u!64 &2296330364526986379
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3294,7 +3295,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -2432090755550338912, guid: cd4f74b8ddd0d2f4fba96cce38e2ff9d, type: 3}
+  m_Mesh: {fileID: -2432090755550338912, guid: e521e99d6d24ebc4c81363e86f057f98, type: 3}
 --- !u!4 &2400108101727351952
 Transform:
   m_ObjectHideFlags: 0

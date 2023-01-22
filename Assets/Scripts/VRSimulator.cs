@@ -8,6 +8,16 @@ using JetBrains.Annotations;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+/*
+  VR version of script for running the simulation and manipulating certain
+  aspects of it. Added functions for controlling playback speed of animation
+  (left and right on the touchpad of the right controller), rewinding/playing
+  (up and down on the touchpad of the right controller) and for toggling the
+  transparency of the brain and skull on and off (trigger on the back of the
+  left controller). Some additional functions exist in the script but were not
+  working as intended before user tests were held and therefore not used.
+*/
+
 public class VRSimulator : MonoBehaviour
 {
     public GameObject cathTop, cathTL, cathTR, cathBL, cathBR,
@@ -21,7 +31,6 @@ public class VRSimulator : MonoBehaviour
     [SerializeField] private InputActionReference timeController = null;
     [SerializeField] private InputActionReference transparencyController = null;
     [SerializeField] private InputActionReference toggleTransparent = null;
-    [SerializeField] private InputActionReference annotatePoint = null;
     private bool transparencyToggleInProgress = false;
     
     public Text[] FrameStuff;
@@ -139,7 +148,7 @@ public class VRSimulator : MonoBehaviour
 
         if (timeInputVal != Vector2.zero)
         {
-            //Debug.Log(timeInputVal.x + " | " + timeInputVal.y);
+            // The input values might need to be adjusted based on hardware
             if(timeInputVal.x > 0.7)
             {
                 rewind = false;
@@ -177,7 +186,7 @@ public class VRSimulator : MonoBehaviour
                 }
 
 
-               Debug.Log(playBackSpeed);
+               //Debug.Log(playBackSpeed);
             }
             if (slider)
             {
@@ -187,7 +196,7 @@ public class VRSimulator : MonoBehaviour
             //Debug.Log("Forward: " + forward + "| Backward: " + rewind + "| Playback speed: " + playBackSpeed);
 
         }
-        Debug.Log("b " + toggleVal);
+        //Debug.Log("b " + toggleVal);
         if (toggleVal > 0.8f && !transparencyToggleInProgress)
         {
             Debug.Log(toggleVal);
@@ -199,15 +208,11 @@ public class VRSimulator : MonoBehaviour
             transparencyToggleInProgress = false;
         }
 
-
         if (Input.GetKeyDown(KeyCode.R))
         {
-
             Invoke(nameof(RestartScene), 1f);
         }
 
-        // print("space is pressed");
-        //paused = !paused;
     }
 
     // Update is called once per frame
@@ -278,7 +283,7 @@ public class VRSimulator : MonoBehaviour
         //Align positions at the barycenter
         cathCenter.transform.position = new Vector3((x1 + x2 + x3 + x4 + x5) / 5.0f, (y1 + y2 + y3 + y4 + y5) / 5.0f, (z1 + z2 + z3 + z4 + z5) / 5.0f);
         skullCenter.transform.position = new Vector3((x6 + x7 + x8 + x9 + x10) / 5.0f, (y6 + y7 + y8 + y9 + y10) / 5.0f, (z6 + z7 + z8 + z9 + z10) / 5.0f);
-        
+
     }
 
     //method to normalize coordinates in Unity scene
@@ -295,7 +300,7 @@ public class VRSimulator : MonoBehaviour
         x8 = headBottomLeft[index, 0] / 1000.0f;
         x9 = headBottomRight[index, 0] / 1000.0f;
         x10 = headBrow[index, 0] / 1000.0f;
-        
+
         //y coordinate
         y1 = cathTip[index, 1] / 1000.0f;
         y2 = cathTopLeft[index, 1] / 1000.0f;
@@ -307,7 +312,7 @@ public class VRSimulator : MonoBehaviour
         y8 = headBottomLeft[index, 1] / 1000.0f;
         y9 = headBottomRight[index, 1] / 1000.0f;
         y10 = headBrow[index, 1] / 1000.0f;
-        
+
         //z coordinate
         z1 = cathTip[index, 2] / 1000.0f;
         z2 = cathTopLeft[index, 2] / 1000.0f;
@@ -461,7 +466,7 @@ public class VRSimulator : MonoBehaviour
 
     private void ToggleTransparency()
     {
-        Debug.Log("umm" + transparencyEnabled);
+        //Debug.Log("umm" + transparencyEnabled);
         Renderer skullRenderer = phantomSkull.GetComponent<Renderer>();
         if (!transparencyEnabled)
         {
